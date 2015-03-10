@@ -1,0 +1,407 @@
+% arara: pdflatex
+% arara: biber
+% arara: pdflatex
+% arara: pdflatex
+% --------------------------------------------------------------------------
+% the TRANSLATIONS package
+% 
+%   
+% 
+% --------------------------------------------------------------------------
+% Clemens Niederberger
+% Web:    https://bitbucket.org/cgnieder/exsheets/
+% E-Mail: contact@mychemistry.eu
+% --------------------------------------------------------------------------
+% Copyright 2011-2013 Clemens Niederberger
+% 
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+% 
+% This work has the LPPL maintenance status `maintained'.
+% 
+% The Current Maintainer of this work is Clemens Niederberger.
+% --------------------------------------------------------------------------
+% The translations package is part of the exsheets bundle
+% --------------------------------------------------------------------------
+% If you have any ideas, questions, suggestions or bugs to report, please
+% feel free to contact me.
+% --------------------------------------------------------------------------
+%
+% if you want to compile this documentation you'll need the document class
+% `cnpkgdoc' which you can get here:
+%    https://bitbucket.org/cgnieder/cnpkgdoc/
+% the class is licensed LPPL 1.3 or later
+%
+% use `pdflatex' and `biber' for compilation
+%
+\PassOptionsToPackage{supstfm=libertinesups}{superiors}
+\documentclass[toc=index,toc=bib,numbers=noendperiod]{cnpkgdoc}
+% ----------------------------------------------------------------------------
+% document layout and typographic features
+\docsetup{
+  pkg      = {cntformats} ,
+  url      = {https://bitbucket.org/cgnieder/exsheets/} ,
+  subtitle = {{\small part of the \href{exsheets_en.pdf}{\ExSheets} bundle}\\[\baselineskip]a different way to read counters} ,
+  language = en ,
+  modules  = true ,
+  code-box = {
+    backgroundcolor  = gray!7!white ,
+    skipbelow        = .6\baselineskip plus .5ex minus .5ex ,
+    skipabove        = .6\baselineskip plus .5ex minus .5ex
+  } ,
+  gobble   = 1
+}
+\usepackage{libertinehologopatch}
+\cnpkgusecolorscheme{friendly}
+
+\usepackage[biblatex]{embrac}[2012/06/29]
+  \ChangeEmph{[}[,.02em]{]}[.055em,-.08em]
+  \ChangeEmph{(}[-.01em,.04em]{)}[.04em,-.05em]
+\usepackage{microtype}
+\usepackage[multiple]{fnpct}
+
+\renewcommand*\othersectionlevelsformat[3]{\textcolor{main}{#3\autodot}\enskip}
+\renewcommand*\partformat{\textcolor{main}{\partname~\thepart\autodot}}
+
+\pagestyle{headings}
+
+\setcapindent{1.5em}
+\setkomafont{caption}{\normalfont\footnotesize\sffamily}
+\setkomafont{captionlabel}{\normalfont\footnotesize\sffamily\scshape}
+
+\usepackage{booktabs,array,ragged2e}
+
+% ----------------------------------------------------------------------------
+% code examples
+\addcmds{
+  @cntfmts@parsed@pattern, AddCounterPattern, alphalph,
+  cs, eSaveCounterPattern, ExplSyntaxOff, ExplSyntaxOn, int,
+  myoddnumber, NewCounterPattern, NewPatternFormat, numexpr, ordinalnum,
+  ReadCounterFrom, ReadCounterPattern, ReadCounterPatternFrom, relax,
+  SaveCounterPattern, somesetupcommand,
+  tmpa, tmpb, the
+}
+
+% ----------------------------------------------------------------------------
+% other packages, bibliography, index
+\usepackage{xcoffins,wasysym,enumitem,booktabs,siunitx}
+\usepackage[accsupp]{acro}
+\DeclareAcronym{id}{
+  short     = id ,
+  long      = Identifier ,
+  format    = \scshape ,
+  pdfstring = ID ,
+  accsupp   = ID
+}
+
+\usepackage{filecontents}
+\usepackage{imakeidx}
+\begin{filecontents*}{\jobname.ist}
+ heading_prefix "{\\bfseries "
+ heading_suffix "\\hfil}\\nopagebreak\n"
+ headings_flag  1
+ delim_0 "\\dotfill\\hyperpage{"
+ delim_1 "\\dotfill\\hyperpage{"
+ delim_2 "\\dotfill\\hyperpage{"
+ delim_r "}\\textendash\\hyperpage{"
+ delim_t "}"
+ suffix_2p "\\nohyperpage{\\,f.}"
+ suffix_3p "\\nohyperpage{\\,ff.}"
+\end{filecontents*}
+\indexsetup{othercode=\footnotesize}
+\makeindex[options={-s \jobname.ist},intoc,columns=3,columnsep=1em]
+
+\usepackage{csquotes}
+\usepackage[backend=biber,style=alphabetic]{biblatex}
+
+
+% ----------------------------------------------------------------------------
+% example definitions that have to be done in the preamble:
+\usepackage{alphalph}
+\NewPatternFormat{aa}{\alphalph}
+\usepackage{fmtcount}
+\NewPatternFormat{o}{\ordinalnum}
+\newcommand*\myoddnumber[1]{\the\numexpr2*(#1)-1\relax}
+\NewPatternFormat{x}{\myoddnumber}
+\NewCounterPattern{testa}{ta}
+
+% ----------------------------------------------------------------------------
+% custom commands
+\newcommand*\ExSheets{{\scshape\textcolor{main}{ExSheets}}\xspace}
+
+\newcommand*\Default[1]{%
+  \hfill\llap
+    {%
+      \ifblank{#1}%
+        {(initially~empty)}%
+        {Default:~\code{#1}}%
+    }%
+  \newline
+}
+\newcommand*\required{\hfill\llap{required}\newline}
+\newcommand*\optional{\hfill\llap{optional}\newline}
+
+\newcommand*\nooption[2]{\item[\code{\textcolor{key}{#1} = #2}] \cnpkgdocarrow\ }
+
+\newcommand*\unexpsign{$\RHD$}
+\newcommand*\expsign{\textcolor{red}{$\rhd$}}
+\renewcommand*\cnpkgdoctriangle{\unexpsign}
+\newcommand*\expandable{%
+  \def\cnpkgdoctriangle{%
+    \expsign
+    \gdef\cnpkgdoctriangle{\unexpsign}}}
+
+\usepackage{marginnote}
+\makeatletter
+\newcommand*\sinceversion[1]{%
+  \@bsphack
+  \marginnote{%
+    \footnotesize\sffamily\RaggedRight
+    \textcolor{black!75}{Introduced in version~#1}}%
+  \@esphack}
+\newcommand*\changedversion[1]{%
+  \@bsphack
+  \marginnote{%
+    \footnotesize\sffamily\RaggedRight
+    \textcolor{black!75}{Changed in version~#1}}%
+  \@esphack}
+\makeatother
+
+\pdfstringdefDisableCommands{\def\llap#1{#1\space}\def\bigstar{*}}
+
+% ----------------------------------------------------------------------------
+% title page
+% \TitlePicture{%
+%   \parbox{.8\linewidth}{%
+%   }%
+% }
+
+\begin{document}
+
+\section{Motivation}\secidx{Motivation}
+\cntformats provides a way to format counters with what I will call patterns.
+This does not in any way effect the usual \LaTeXe\ way of treating counters and
+does not use \cmd*{the<counter>} nor is it affected by the redefinition of them.
+
+This package is aimed at package or class authors and probably not very useful
+for document authors.
+
+When I first had the idea for this package the idea of what it does already
+existed as part of the \ExSheets package. I can't recall why I came up with
+the idea in the first place or why I originally wanted a new syntax for
+formatting the \code{question} counter. Anyway, here we are.
+\secidx*{Motivation}
+
+\section{License and Requirements}\label{sec:license}\secidx{Requirements}
+\cntformats is placed under the terms of the \LaTeX{} Project Public License,
+version 1.3 or later (\url{http://www.latex-project.org/lppl.txt}). It has the
+status ``maintained.''
+
+\cntformats requires the \paket{etoolbox} package.
+\secidx*{Requirements}
+
+\section{Example}\secidx{Example}
+A use case typically looks as follows:
+\begin{beispiel}
+ \ReadCounterPattern{se.sse}
+\end{beispiel}
+where the key \code{se} stands for the current value of the \code{section} counter
+and \code{sse} for \code{subsection}, respectively. \code{se.sse} is an example
+for what will be called \emph{pattern}. The keys for the counters can have optional
+arguments that specify the format:
+\begin{beispiel}
+ \stepcounter{subsection}
+ \ReadCounterPattern{se[A](sse[r])}
+\end{beispiel}
+\code{A} stands for \cmd{Alph} and \code{r} for \cmd{roman}. A complete list can
+be found in table~\ref{tab:predefined:formats} on page~\pageref{tab:predefined:formats}.
+As you can see you can insert arbitrary other tokens in a pattern that won't be
+changed. It is important to notice, though, that the patterns are only replaced
+if they're \emph{not} placed in a braced group!
+
+\begin{beispiel}
+ \ReadCounterPattern{{se[A](sse[r])}}
+\end{beispiel}
+
+I would imagine that the argument to \cmd{ReadCounterPattern} is usually
+supplied by a user setting an option \ldots
+\begin{beispiel}[code only]
+ \somesetupcommand{
+   counter-format = se[A](sse[r])
+ }
+\end{beispiel}
+\ldots{} and then internally used by the corresponding package or class.
+\secidx*{Example}
+
+\section{Usage}\secidx{Usage}
+In the following description of the available commands the symbol \expsign{}
+means that the command is expandable, \unexpsign{} means that it isn't.
+
+In order to make counters known to \cntformats the following commands are used:
+\begin{beschreibung}
+ \Befehl{AddCounterPattern}*[<module>]{<counter>}\ma{<pattern>}\newline
+   This command will make the (existing) counter \code{<counter>} known to
+   \cntformats and assign the pattern \code{<pattern>} to it.
+ \Befehl{NewCounterPattern}*[<module>]{<counter>}\ma{<pattern>}\newline
+   This command will create a new counter \code{<counter>}, make it known to
+   \cntformats and assign the pattern \code{<pattern>} to it.
+ \Befehl{ReadCounterFrom}[<module>]{<counter>}\ma{<internal cmd>}\newline
+   If you use one of the commands above with the starred version the number for
+   the pattern is not automatically fetched from the internal \cmd*{c@<counter>}.
+   This can now be assigned with \cmd{ReadCounterFrom} where \code{<internal cmd>}
+   is the macro that holds the number.
+\end{beschreibung}
+The commands above can only be used in the document preamble.
+
+After the creation of these pattern markers one wants to be able to use them.
+There are a number of macros that allow different aspects of usage.
+\begin{beschreibung}
+ \Befehl{ReadCounterPattern}[<module>]{<pattern>}\newline
+   Reads, interprets and prints a pattern.
+ \expandable\Befehl{@cntfmts@parsed@pattern}\newline
+   After \cmd{ReadCounterPattern} has been used the current pattern interpretation
+   is stored in this macro. The \emph{interpretation} is \emph{not} what is printed.
+   See the examples below for details.
+ \Befehl{ReadCounterPatternFrom}[<module>]{<macro that holds pattern>}\newline
+   Reads, interprets and prints a pattern that's stored in a macro.\\
+   Otherwise the same as \cmd{ReadCounterPattern}.
+ \Befehl{SaveCounterPattern}{<cmd a>}\ma{<cmd b>}\ma{<pattern>}\newline
+   Saves the \code{<pattern>} in \code{<cmd a>} and the interpreted pattern in
+   \code{<cmd b>}.
+ \Befehl{eSaveCounterPattern}[<module>]{<cmd a>}\ma{<cmd b>}\ma{<pattern>}\newline
+   Saves the \code{<pattern>} in \code{<cmd a>} and the expanded pattern in
+   \code{<cmd b>}.
+ \Befehl{SaveCounterPatternFrom}[<module>]{<cmd a>}\ma{<cmd b>}\ma{<macro that
+   holds pattern>}\newline
+   Like \cmd{SaveCounterPattern} but reads the pattern from a macro.
+ \Befehl{eSaveCounterPatternFrom}[<module>]{<cmd a>}\ma{<cmd b>}\ma{<macro that
+   holds pattern>}\newline
+   Like \cmd{eSaveCounterPattern} but reads the pattern from a macro.
+\end{beschreibung}
+
+The optional argument \code{<module>} should be specific for a package, say, so
+that different patterns for the \code{section} for example don't interfer with
+each other. If you leave the argument the default module \code{cntfmts} is used.
+
+The \ExSheets packages uses the commands with the module \code{exsheets}.
+You can find the following lines in \ExSheets' code:
+\begin{beispiel}[code only]
+ \AddCounterPattern*[exsheets]{section}{se}
+ \ReadCounterFrom[exsheets]{section} \l__exsheets_counter_sec_int
+ \NewCounterPattern*[exsheets]{question}{qu}
+ \ReadCounterFrom[exsheets]{question} \l__exsheets_counter_qu_int
+\end{beispiel}
+
+Now let's see a short example that hopefully explains what the macros do:
+\begin{beispiel}
+ % preamble
+ % \NewCounterPattern{testa}{ta}
+ \setcounter{testa}{11}
+ \ReadCounterPattern{ta}
+ \ReadCounterPattern{ta[a]} \\
+ \ttfamily\makeatletter
+ \meaning\@cntfmts@parsed@pattern
+ 
+ \bigskip
+ \SaveCounterPattern\tmpa\tmpb{ta[a]}
+ \meaning\tmpa \\
+ \meaning\tmpb
+ 
+ \bigskip
+ \eSaveCounterPattern\tmpa\tmpb{ta[a]}
+ \meaning\tmpa \\
+ \meaning\tmpb
+\end{beispiel}
+You can see that somehow additional (empty) groups and a \cmd*{relax} found their
+way into the interpreted and thus the expanded pattern. This is due to the fact
+that reading optional arguments expandably isn't easy and must have some safety
+net.
+\secidx*{Usage}
+
+\section{Predefined and New Patterns and Format Keys}\secidx{Predefined Patterns}
+\subsection{Predefined Patterns and Format Keys}
+\cntformats predefines a number of pattern keys. These are listed in
+table~\ref{tab:predefined:patterns}.
+
+\begin{multicols}{2}
+\begin{center}
+ \centering
+ \captionof{table}{Predefined Patterns for the module \code{cntfmts}.}\label{tab:predefined:patterns}
+ \begin{tabular}{>{\ttfamily}l>{\ttfamily}l}
+  \toprule
+   \normalfont\bfseries counter & \normalfont\bfseries pattern \\
+  \midrule
+   chapter       & ch \\
+   section       & se \\
+   subsection    & sse \\
+   subsubsection & ssse \\
+   paragraph     & pg \\
+  \bottomrule
+ \end{tabular}
+
+ \captionof{table}{Predefined Format Keys}\label{tab:predefined:formats}
+ \begin{tabular}{>{\ttfamily}ll}
+  \toprule
+   \normalfont\bfseries key & \normalfont\bfseries format \\
+  \midrule
+   1 & \cmd{arabic} \\
+   a & \cmd{alph} \\
+   A & \cmd{Alph} \\
+   r & \cmd{roman} \\
+   R & \cmd{Roman} \\
+  \bottomrule
+ \end{tabular}
+\end{center}
+\end{multicols}
+
+\subsection{New Patterns and Format Keys}
+Table~\ref{tab:predefined:formats} lists the predefined formats. If you want you
+can add own formats.
+\begin{beschreibung}
+ \Befehl{NewPatternFormat}{<pattern>}\ma{<format>}\newline
+   \code{<format>} is a number presentation command like \cmd{@alph}, \textit{i.e.},
+   it needs a mandatory argument that takes a number. It is used in \code{<format>}
+   \emph{without} its argument. This command can only be used in the preamble.
+\end{beschreibung}
+
+Here are now a few examples of possible new patterns. Suppose the following code
+in the preamble:
+\begin{beispiel}[code only]
+ \usepackage{alphalph,fmtcount}
+ \newcommand*\myoddnumber[1]{\the\numexpr2*(#1)-1\relax}
+
+ \NewPatternFormat{aa}{\alphalph}
+ \NewPatternFormat{o}{\ordinalnum}
+ \NewPatternFormat{x}{\myoddnumber}
+
+ \newcounter{testa}
+ \NewCounterPattern{testa}{ta}
+ \setcounter{testa}{4}
+\end{beispiel}
+
+Then we can use the new pattern and the new formats as follows:\setcounter{testa}{4}
+\begin{beispiel}
+ \ReadCounterPattern{ta[aa]}
+ \ReadCounterPattern{ta[o]}
+ \ReadCounterPattern{ta[x]}
+\end{beispiel}
+\secidx*{Predefined Patterns}
+
+\section{Implementation}
+In the following code the lines 1--30 have been omitted. They only repeat the
+license statement which has already been mentioned in section~\ref{sec:license}.
+
+\implementation[linerange={31-1000},firstnumber=31]
+
+\indexprologue{\noindent Section titles are indicated \textbf{bold}, packages
+\textsf{sans serif}, commands \code{\textbackslash\textcolor{code}{brown}}
+ and options \textcolor{key}{\code{yellow}}.\par\bigskip}
+
+\printindex
+
+\end{document}
